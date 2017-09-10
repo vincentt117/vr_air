@@ -34,7 +34,7 @@ function analyzeText(text) {
   // TTS
   var say = require('say');
 
-  var speech = 'Station calling Kennedy, say again';
+  var speech = '';
 
 
   // Return string
@@ -54,7 +54,16 @@ function analyzeText(text) {
     type: 'PLAIN_TEXT'
   };
   function setSpeechToTakeOffClearance(directionOfFlight) {
-        speech = ["November " + pilotInfo["flightNum"] + ", " + directionOfFlight + ' departure approved. ' + "Wind " + Math.floor(Math.random() *  360) + " at " + Math.floor(Math.random() * 15) +
+    var windDirection = Math.floor(Math.random() *  36);
+    var windDirectionString = '';
+    if(windDirection < 10)
+      {
+        windDirectionString = "0 " + windDirection.toString().split('').join(' ');
+      }
+      else{
+        windDirectionString = windDirection.toString().split('').join(' ') + " 0";
+      }
+        speech = ["November " + pilotInfo["flightNum"] + ", " + directionOfFlight + ' departure approved. ' + "Wind " + windDirectionString + " at " + (Math.floor(Math.random() * 10) + 5).toString().split('').join(' ') +
             " runway " + "4 left" + " cleared for takeoff"];
     }
   language.analyzeSyntax({
@@ -82,7 +91,7 @@ function analyzeText(text) {
           pilotInfo["gateDir"] = part.text.content;
         }
         else if(part.text.content.toUpperCase() ==="TAXI"){
-          speech = "November " + pilotInfo["flightNum"] + " , runway 1 3 right Left, taxi via Quebec Alpha Kilo. Cross runway 1 3 Left.";
+          speech = "November " + pilotInfo["flightNum"] + " , runway 1 3 Left, taxi via Quebec";
           // setTimeout(function() {say.speak(speech);}, 1000);
           // setTimeout(function() {console.log(speech);
           // }, 500);
