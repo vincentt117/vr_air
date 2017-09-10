@@ -20,9 +20,9 @@ Example: 213 means pin 13 is pressed
 */
 
 const int rotarySensorInterval = 100;
-const int scanCodeStartPoint = 200;
+const int scanCodeStartPoint = 100;
 
-int rotarySensorValues[5];
+int rotarySensorValues[6];
 bool lastButtonSensorStates[14];
 
 void setup() {
@@ -33,34 +33,33 @@ void setup() {
 	pinMode(A3, INPUT);
 	pinMode(A4, INPUT);
 	pinMode(A5, INPUT);
-	for (size_t i = 0; i < 14; i++)
+	for (size_t i = 2; i < 14; i++)
 	{
 		pinMode(i, INPUT);
 	}
 
-	Serial.begin(9600);
-	Serial.write("Setup Complete");
+	//Serial.begin(9600);
+	//Serial.write("Setup Complete");
 	Keyboard.begin();
-	for (uint32_t i = 2; i < 5; i++)
+	for (uint32_t i = 0; i < 6; i++)
 	{
 		rotarySensorValues[i] = analogRead(i) / rotarySensorInterval;
 	}
-	for (size_t i = 0; i < 14; i++)
+	for (size_t i = 2; i < 14; i++)
 	{
 		lastButtonSensorStates[i] = false;
 	}
 }
 
 void loop() {
-	// Serial.write("Loop executing.");
+	// //Serial.write("Loop executing.");
 	doAnalog();
 	doDigital();
-	delay(1);
 }
 
 void doAnalog() {
-	//TODO i < 6
-	for (size_t i = 0; i < 1; i++)
+	for (size_t i = 0; i < 6; i++)
+		//for (size_t i = 3; i < 4; i++)
 	{
 		uint32_t value = analogRead(i);
 		//Serial.println("Pin " + String(i) + " value is " + String(value));
@@ -74,10 +73,14 @@ void doAnalog() {
 		uint8_t scanCode = scanCodeStartPoint;
 		scanCode += (i * 10);
 		scanCode += upOrDown;
-		for (size_t j = 0; j < abs(timesToPress); j++)
+		int timesToPressActual = abs(timesToPress) * 200;
+		//Serial.println("Sending Scancode " + String(scanCode));
+		//if(timesToPress != 0)
+		for (size_t j = 0; j < timesToPressActual; j++)
 		{
-			//Serial.println("Sending Scancode " + String(scanCode));
 			Keyboard.press(scanCode);
+			//break;
+			//delay(100);
 			Keyboard.release(scanCode);
 		}
 	}
@@ -91,13 +94,13 @@ void doDigital() {
 			result = true;
 		else
 			result = false;
-		Serial.println("Button " + String(i) + " state is " + result);
+		//Serial.println("Button " + String(i) + " state is " + result);
 		if (result != lastButtonSensorStates[i])
 		{
 			uint8_t scanCode = scanCodeStartPoint;
 			scanCode += i;
 			if (result) {
-				Serial.println("Sending Scancode " + String(scanCode));
+				//Serial.println("Sending Scancode " + String(scanCode));
 				Keyboard.press(scanCode);
 				Keyboard.release(scanCode);
 			}
