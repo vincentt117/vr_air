@@ -78,10 +78,6 @@ function analyzeText(text) {
           // setTimeout(function() {console.log(speech);
           // }, 500);
         }
-        else if (part.text.content.toUpperCase() === "KILO"){
-          console.log("ICU");
-          pilotInfo["hold"] == true;
-        }
         else if (part.text.content.toUpperCase() ==="LEFT" || part.text.content.toUpperCase() ==="RIGHT"){
           pilotInfo["gateDir"] = part.text.content;
         }
@@ -97,15 +93,9 @@ function analyzeText(text) {
       });
     }).then((results) => {
       console.log(text);
-      if (pilotInfo["hold"] === true){
-        console.log("Hello");
-        say.speak("");
-      }
-      else{
+        pilotInfo["hold"] == true;
         say.speak(speech);
         console.log(speech);
-      }
-
     })
     .catch((err) => {
       console.error('ERROR:', err);
