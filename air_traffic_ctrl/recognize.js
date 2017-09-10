@@ -53,6 +53,11 @@ function analyzeText(text) {
     type: 'PLAIN_TEXT'
   };
 
+  function setSpeechToTakeOffClearance(directionOfFlight) {
+      speech = ["November " + pilotInfo["flightNum"] + ", " + directionOfFlight + ' departure approved. ' + "Wind " + Math.floor(Math.random() * 360) + " at " + Math.floor(Math.random() * 15) +
+          " runway " + "4 left" + " cleared for takeoff"];
+  }
+
   language.analyzeSyntax({
       document: document
     })
@@ -68,8 +73,7 @@ function analyzeText(text) {
 
         }
         else if (part.text.content.toUpperCase() === 'NORTH' || part.text.content.toUpperCase() === 'SOUTH' || part.text.content.toUpperCase() === 'EAST' || part.text.content.toUpperCase() === 'WEST') {
-          speech =["November " + pilotInfo["flightNum"] + ", " + part.text.content + ' on course departure approved. ' + "Wind " + Math.floor(Math.random() * 360)  + " at " + Math.floor(Math.random() * 15) +
-          " runway " + "4 left" + " cleared for takeoff"];
+            setSpeechToTakeOffClearance(part.text.content);
           // setTimeout(function() {say.speak(speech[Math.floor(Math.random()*speech.length)] );}, 1000);
           // setTimeout(function() {console.log(speech);
           // }, 500);
@@ -86,6 +90,9 @@ function analyzeText(text) {
         // else if (part.text.content === 'departure') {
         //   var speech = 'November' + pilotInfo["fligtNum"] + ', runway 3 1 Left at Kilo-Alpha, taxi via Quebec Alpha Kilo-Alpha';
         // }
+        else {
+            setSpeechToTakeOffClearance("on course");
+        }
       });
     }).then((results) => {
       say.speak(speech);
