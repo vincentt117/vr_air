@@ -42,6 +42,7 @@ function analyzeText(text) {
   pilotInfo["flightNum"] = "";
   pilotInfo["gateNum"] = "23";
   pilotInfo["gateDir"] = "Right";
+  pilotInfo["hold"] = false;
   //associativeArray["one"] = "First";
 
   // The text to analyze, e.g. "Hello, world!"
@@ -52,7 +53,10 @@ function analyzeText(text) {
     'content': text,
     type: 'PLAIN_TEXT'
   };
-
+  function setSpeechToTakeOffClearance(directionOfFlight) {
+        speech = ["November " + pilotInfo["flightNum"] + ", " + directionOfFlight + ' departure approved. ' + "Wind " + Math.floor(Math.random() *  360) + " at " + Math.floor(Math.random() * 15) +
+            " runway " + "4 left" + " cleared for takeoff"];
+    }
   language.analyzeSyntax({
       document: document
     })
@@ -61,33 +65,39 @@ function analyzeText(text) {
 
       // console.log('Tokens:');
       syntax.tokens.forEach((part) => {
-        // console.log(`${part.partOfSpeech.tag}: ${part.text.content}`);
-        // console.log(`Morphology:`, part.partOfSpeech);
+        console.log(`${part.partOfSpeech.tag}: ${part.text.content}`);
+        console.log(`Morphology:`, part.partOfSpeech);
         if (part.partOfSpeech.tag === "NUM") {
+          console.log(part.partOfSpeech.tag);
           pilotInfo["fligtNum"] = part.text.content.split('').join(' ');
 
         }
         else if (part.text.content.toUpperCase() === 'NORTH' || part.text.content.toUpperCase() === 'SOUTH' || part.text.content.toUpperCase() === 'EAST' || part.text.content.toUpperCase() === 'WEST') {
-          speech =["November " + pilotInfo["flightNum"] + ", " + part.text.content + ' on course departure approved. ' + "Wind " + Math.floor(Math.random() * 360)  + " at " + Math.floor(Math.random() * 15) +
-          " runway " + "4 left" + " cleared for takeoff"];
+          setSpeechToTakeOffClearance(part.text.content);
           // setTimeout(function() {say.speak(speech[Math.floor(Math.random()*speech.length)] );}, 1000);
           // setTimeout(function() {console.log(speech);
           // }, 500);
+        }
+        else if (part.text.content.toUpperCase() === "KILO ALPHA"){
+          pilotInfo["hold"] == true;
         }
         else if (part.text.content.toUpperCase() ==="LEFT" || part.text.content.toUpperCase() ==="RIGHT"){
           pilotInfo["gateDir"] = part.text.content;
         }
         else if(part.text.content.toUpperCase() ==="TAXI"){
-          speech = "November " + pilotInfo["flightNum"] + " runway 1 3 right Left, taxi via Quebec Alpha Kilo. Cross runway 1 3 Left.";
+          speech = "November" + pilotInfo["flightNum"] + " , runway 1 3 right Left, taxi via Quebec Alpha Kilo. Cross runway 1 3 Left.";
           // setTimeout(function() {say.speak(speech);}, 1000);
           // setTimeout(function() {console.log(speech);
           // }, 500);
         }
-        // else if (part.text.content === 'departure') {
-        //   var speech = 'November' + pilotInfo["fligtNum"] + ', runway 3 1 Left at Kilo-Alpha, taxi via Quebec Alpha Kilo-Alpha';
-        // }
+        else if (part.text.content === 'departure') {
+          setSpeechToTakeOffClearance("on course");
+      }
       });
     }).then((results) => {
+      if (pilotInfo["hold"]){
+        speech = "";
+      }
       say.speak(speech);
       console.log(speech);
     })
