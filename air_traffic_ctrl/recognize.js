@@ -65,11 +65,11 @@ function analyzeText(text) {
 
       // console.log('Tokens:');
       syntax.tokens.forEach((part) => {
-        console.log(`${part.partOfSpeech.tag}: ${part.text.content}`);
-        console.log(`Morphology:`, part.partOfSpeech);
-        if (part.partOfSpeech.tag === "NUM") {
+        // console.log(`${part.partOfSpeech.tag}: ${part.text.content}`);
+        // console.log(`Morphology:`, part.partOfSpeech);
+        if (part.partOfSpeech.tag === "NUM" && part.text.content.length >= 3) {
           console.log(part.partOfSpeech.tag);
-          pilotInfo["fligtNum"] = part.text.content.split('').join(' ');
+          pilotInfo["flightNum"] = part.text.content.split('').join(' ');
 
         }
         else if (part.text.content.toUpperCase() === 'NORTH' || part.text.content.toUpperCase() === 'SOUTH' || part.text.content.toUpperCase() === 'EAST' || part.text.content.toUpperCase() === 'WEST') {
@@ -78,14 +78,15 @@ function analyzeText(text) {
           // setTimeout(function() {console.log(speech);
           // }, 500);
         }
-        else if (part.text.content.toUpperCase() === "KILO ALPHA"){
+        else if (part.text.content.toUpperCase() === "KILO"){
+          console.log("ICU");
           pilotInfo["hold"] == true;
         }
         else if (part.text.content.toUpperCase() ==="LEFT" || part.text.content.toUpperCase() ==="RIGHT"){
           pilotInfo["gateDir"] = part.text.content;
         }
         else if(part.text.content.toUpperCase() ==="TAXI"){
-          speech = "November" + pilotInfo["flightNum"] + " , runway 1 3 right Left, taxi via Quebec Alpha Kilo. Cross runway 1 3 Left.";
+          speech = "November " + pilotInfo["flightNum"] + " , runway 1 3 right Left, taxi via Quebec Alpha Kilo. Cross runway 1 3 Left.";
           // setTimeout(function() {say.speak(speech);}, 1000);
           // setTimeout(function() {console.log(speech);
           // }, 500);
@@ -95,11 +96,16 @@ function analyzeText(text) {
       }
       });
     }).then((results) => {
-      if (pilotInfo["hold"]){
-        speech = "";
+      console.log(text);
+      if (pilotInfo["hold"] === true){
+        console.log("Hello");
+        say.speak("");
       }
-      say.speak(speech);
-      console.log(speech);
+      else{
+        say.speak(speech);
+        console.log(speech);
+      }
+
     })
     .catch((err) => {
       console.error('ERROR:', err);
